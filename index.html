@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <title>Когда сезон?</title>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.4;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .title {
+            margin-left: 1.25rem;
+            font-size: 2.5em;
+            font-weight: inherit;
+        }
+
+        .season__title {
+            padding: .2em 1.5rem .25rem 1.25rem;
+            display: inline-block;
+            margin: 0;
+            color: #fff;
+            font-size: 2em;
+        }
+
+        .season--winter .season__title {
+            background-color: rgb(0, 64, 221);
+        }
+
+        .season--winter .month:nth-of-type(1),
+        .season--winter .month:nth-of-type(1) .month__title::before,
+        .season--winter .month:nth-of-type(1) .month__title::after {
+            border-color: rgb(0, 64, 221);
+        }
+
+        .season--winter .month:nth-of-type(2),
+        .season--winter .month:nth-of-type(2) .month__title::before,
+        .season--winter .month:nth-of-type(2) .month__title::after {
+            border-color: rgb(0, 122, 255);
+        }
+
+        .season--winter .month:nth-of-type(3),
+        .season--winter .month:nth-of-type(3) .month__title::before,
+        .season--winter .month:nth-of-type(3) .month__title::after {
+            border-color: rgb(64, 156, 255);
+        }
+
+        .season--autumn .season__title {
+            background-color: rgb(201, 52, 0);
+        }
+
+        .season--autumn .month:nth-of-type(1),
+        .season--autumn .month:nth-of-type(1) .month__title::before,
+        .season--autumn .month:nth-of-type(1) .month__title::after {
+            border-color: rgb(201, 52, 0);
+        }
+
+        .season--autumn .month:nth-of-type(2),
+        .season--autumn .month:nth-of-type(2) .month__title::before,
+        .season--autumn .month:nth-of-type(2) .month__title::after {
+            border-color: rgb(255, 149, 0);
+        }
+
+        .season--autumn .month:nth-of-type(3),
+        .season--autumn .month:nth-of-type(3) .month__title::before,
+        .season--autumn .month:nth-of-type(3) .month__title::after {
+            border-color: rgb(255, 179, 64);
+        }
+
+        .season--summer .season__title {
+            background-color: rgb(211, 15, 69);
+        }
+
+        .season--summer .month:nth-of-type(1),
+        .season--summer .month:nth-of-type(1) .month__title::before,
+        .season--summer .month:nth-of-type(1) .month__title::after {
+            border-color: rgb(211, 15, 69);
+        }
+
+        .season--summer .month:nth-of-type(2),
+        .season--summer .month:nth-of-type(2) .month__title::before,
+        .season--summer .month:nth-of-type(2) .month__title::after {
+            border-color: rgb(255, 45, 85);
+        }
+
+        .season--summer .month:nth-of-type(3),
+        .season--summer .month:nth-of-type(3) .month__title::before,
+        .season--summer .month:nth-of-type(3) .month__title::after {
+            border-color: rgb(255, 100, 130);
+        }
+
+        .season--spring .season__title {
+            background-color: rgb(36, 138, 61);
+        }
+
+        .season--spring .month:nth-of-type(1),
+        .season--spring .month:nth-of-type(1) .month__title::before,
+        .season--spring .month:nth-of-type(1) .month__title::after {
+            border-color: rgb(36, 138, 61);
+        }
+
+        .season--spring .month:nth-of-type(2),
+        .season--spring .month:nth-of-type(2) .month__title::before,
+        .season--spring .month:nth-of-type(2) .month__title::after {
+            border-color: rgb(52, 199, 89);
+        }
+
+        .season--spring .month:nth-of-type(3),
+        .season--spring .month:nth-of-type(3) .month__title::before,
+        .season--spring .month:nth-of-type(3) .month__title::after {
+            border-color: rgb(48, 255, 91);
+        }
+
+        .season+.season {
+            margin-top: 3em;
+        }
+
+        .month {
+            display: flex;
+            flex-wrap: wrap;
+            border-left: .25rem solid;
+        }
+
+        .month__title {
+            flex-basis: 100%;
+            margin-bottom: 0;
+            display: flex;
+            font-size: 1.5em;
+            position: sticky;
+            top: 0;
+            background: Canvas;
+        }
+
+        .month__title a {
+            text-decoration: none;
+            margin-left: .325em;
+            margin-right: .325em;
+        }
+
+        .month__title a:hover::after {
+            content: ' 🔗';
+            font-size: 1rem;
+        }
+
+        .month__title::before,
+        .month__title::after {
+            content: '';
+            border-bottom: .2em solid;
+            display: block;
+            line-height: 1;
+            margin-bottom: .325em;
+        }
+
+        .month__title::before {
+            flex-basis: .5rem;
+        }
+
+        .month__title::after {
+            flex-grow: 1;
+        }
+
+        .list {
+            margin-right: 1.25rem;
+            flex-basis: 13em;
+            flex-grow: 1;
+            padding-left: 1rem;
+        }
+
+        .list h4 {
+            margin-bottom: 0;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            font-weight: inherit;
+            font-size: 1.25em;
+        }
+
+        .list ul {
+            margin-top: 0;
+            padding: 0;
+            list-style-position: inside;
+        }
+
+        .list li {
+            margin-top: .5em;
+        }
+
+        footer {
+            margin-left: 1.25rem;
+            padding-bottom: 2em;
+            padding-top: 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1 class="title">Времена года</h1>
+
+        <section class="season season--winter">
+            <h2 class="season__title">Зима</h2>
+            <div class="month" id="december">
+                <h3 class="month__title"><a href="#december">Декабрь</a></h3>
+                <div class="list">
+                    <h4>Сезонное</h4>
+                    <ul>
+                        <li>Белокочанная, краснокочанная, цветная и брюссельская капуста</li>
+                        <li>Картофель</li>
+                        <li>Морковь</li>
+                        <li>Свёкла</li>
+                        <li>Репчатый лук</li>
+                        <li>Лук-порей</li>
+                        <li>Репа</li>
+                        <li>Тыква</li>
+                        <li>Цикорий</li>
+                        <li>Сельдерей</li>
+                        <li>Пастернак</li>
+                        <li>Топинамбур</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>Чем заняться</h4>
+                    <ul>
+                        <li>Украсить дом</li>
+                        <li>Послушать новогодние песни</li>
+                        <li>Сварить глинтвейн</li>
+                        <li>Прогуляться по украшенному городу</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>События</h4>
+                    <ul>
+                        <li>Новый год</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="month" id="january">
+                <h3 class="month__title"><a href="#january">Январь</a></h3>
+                <div class="list">
+                    <h4>Сезонное</h4>
+                    <ul>
+                        <li>Белокочанная, краснокочанная, пекинская, брокколи и брюссельская капуста</li>
+                        <li>Картофель</li>
+                        <li>Морковь</li>
+                        <li>Свёкла</li>
+                        <li>Редька</li>
+                        <li>Лук</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>Чем заняться</h4>
+                    <ul>
+                        <li>Покататься с горок</li>
+                        <li>Приготовить горячий шоколад</li>
+                        <li>Испечь печенье</li>
+                        <li>Покататься на коньках</li>
+                        <li>Устроить ночь настольных игр</li>
+                        <li>Связать шарф</li>
+                        <li>Собрать пазл</li>
+                        <li>Взять мастер-класс по готовке</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>События</h4>
+                    <ul>
+                        <li>Православное рождество</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="month" id="february">
+                <h3 class="month__title"><a href="#february">Февраль</a></h3>
+                <div class="list">
+                    <h4>Сезонное</h4>
+                    <ul>
+                        <li>Брокколи</li>
+                        <li>Квашенная капуста</li>
+                        <li>Брюссельская капуста</li>
+                        <li>Картофель</li>
+                        <li>Морковь</li>
+                        <li>Красный перец</li>
+                        <li>Тыква</li>
+                        <li>Шпинат</li>
+                        <li>Батат</li>
+                        <li>Томаты</li>
+                        <li>Сельдерей</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>Чем заняться</h4>
+                    <ul>
+                        <li>Сходить на хоккей</li>
+                        <li>Слепить снеговика</li>
+                        <li>Испечь пирог</li>
+                        <li>Посидеть при свечах</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>События</h4>
+                    <ul>
+                        <li>День святого Валентина</li>
+                        <li>День защитника Отечества</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="season season--spring">
+            <h2 class="season__title">Весна</h2>
+            <div class="month" id="march">
+                <h3 class="month__title"><a href="#march">Март</a></h3>
+                <div class="list">
+                    <h4>Сезонное</h4>
+                    <ul>
+                        <li>Белокочанная, краснокочанная, цветная, пекинская и брюссельская капуста</li>
+                        <li>Картофель</li>
+                        <li>Морковь</li>
+                        <li>Свёкла</li>
+                        <li>Репчатый и зеленый лук</li>
+                        <li>Лук-порей</li>
+                        <li>Редис</li>
+                        <li>Репа</li>
+                        <li>Хрен</li>
+                        <li>Чеснок</li>
+                        <li>Редька</li>
+                        <li>Турнепс</li>
+                        <li>Ревень</li>
+                        <li>Сельдерей</li>
+                        <li>Цикорий</li>
+                        <li>Пастернак</li>
+                        <li>Топинамбур</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>Чем заняться</h4>
+                    <ul>
+                        <li>Залпом посмотреть сериал</li>
+                        <li>Сварить суп</li>
+                        <li>Принять ванну с пеной</li>
+                        <li>Сходить в музей</li>
+                        <li>Сходить в новый ресторан</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>События</h4>
+                    <ul>
+                        <li>Международный женский день</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="month" id="april">
+                <h3 class="month__title"><a href="#april">Апрель</a></h3>
+                <div class="list">
+                    <h4>Сезонное</h4>
+                    <ul>
+                        <li>Белокочанная и цветная капуста</li>
+                        <li>Лук-порей</li>
+                        <li>Морковь</li>
+                        <li>Ревень</li>
+                        <li>Редис</li>
+                        <li>Свёкла</li>
+                        <li>Спаржа</li>
+                        <li>Листовой цикорий</li>
+                        <li>Фенхель</li>
+                        <li>Зелёный лук</li>
+                        <li>Кресс-салат</li>
+                        <li>Петрушка</li>
+                        <li>Листовой салат</li>
+                        <li>Салат радиккио</li>
+                        <li>Черемша</li>
+                        <li>Шнитт-лук</li>
+                        <li>Шпинат</li>
+                        <li>Щавель</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>Чем заняться</h4>
+                    <ul>
+                        <li>Понаблюдать за птицами</li>
+                        <li>Полюбоваться цветущими деревьями</li>
+                        <li>Устроить пикник</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>События</h4>
+                    <ul>
+                        <li>Пасха</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="month" id="may">
+                <h3 class="month__title"><a href="#may">Май</a></h3>
+                <div class="list">
+                    <h4>Сезонное</h4>
+                    <ul>
+                        <li>Белокочанная и цветная капуста</li>
+                        <li>Картофель</li>
+                        <li>Морковь</li>
+                        <li>Огурцы</li>
+                        <li>Помидоры</li>
+                        <li>Ревень</li>
+                        <li>Редис</li>
+                        <li>Редька</li>
+                        <li>Свёкла</li>
+                        <li>Спаржа</li>
+                        <li>Цуккини</li>
+                        <li>Базилик</li>
+                        <li>Водяной кресс-салат</li>
+                        <li>Зелёный лук</li>
+                        <li>Петрушка</li>
+                        <li>Руккола</li>
+                        <li>Кинза</li>
+                        <li>Капуста пак-чой</li>
+                        <li>Салат латук</li>
+                        <li>Сельдерей</li>
+                        <li>Салат радиккио</li>
+                        <li>Шнитт-лук</li>
+                        <li>Шпинат</li>
+                        <li>Щавель</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>Чем заняться</h4>
+                    <ul>
+                        <li>Понаблюдать за птицами</li>
+                        <li>Пойти в поход</li>
+                        <li>Съездить на сплав</li>
+                        <li>Устроить пикник</li>
+                        <li>Сходить на рынок</li>
+                        <li>Полюбоваться закатом</li>
+                        <li>Съездить на шашлыки</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>События</h4>
+                    <ul>
+                        <li>День труда</li>
+                        <li>День победы</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="season season--summer">
+            <h2 class="season__title">Лето</h2>
+            <div class="month" id="june">
+                <h3 class="month__title"><a href="#june">Июнь</a></h3>
+                <div class="list">
+                    <h4>Сезонное</h4>
+                    <ul>
+                        <li>Кабачки</li>
+                        <li>Баклажаны</li>
+                        <li>Морковь</li>
+                        <li>Перец</li>
+                        <li>Белокочанная и цветная капуста</li>
+                        <li>Брокколи, пак-чой, кольраби</li>
+                        <li>Репчатый лук</li>
+                        <li>Лук-порей</li>
+                        <li>Картофель</li>
+                        <li>Свёкла</li>
+                        <li>Огурцы</li>
+                        <li>Помидоры</li>
+                        <li>Редис</li>
+                        <li>Редька</li>
+                        <li>Сельдерей</li>
+                        <li>Спаржа</li>
+                        <li>Стручковая фасоль</li>
+                        <li>Артишоки</li>
+                        <li><b>Зелень:</b> руккола, кинза, базилик, петрушка, розмарин, мята, зеленый лук, молодые побеги чеснока, сельдерей, шпинат и щавель, крапива</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>Чем заняться</h4>
+                    <ul>
+                        <li>Испечь фруктовый пирог</li>
+                        <li>Сходить по ягоды</li>
+                        <li>Сходить в поход</li>
+                        <li>Съездить на сплав</li>
+                        <li>Приготовить сангрию</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="month" id="july">
+                <h3 class="month__title"><a href="#july">Июль</a></h3>
+                <div class="list">
+                    <h4>Сезонное</h4>
+                    <ul>
+                        <li>Молодой картофель</li>
+                        <li>Морковь</li>
+                        <li>Капуста</li>
+                        <li>Перцы</li>
+                        <li>Баклажаны</li>
+                        <li>Помидоры</li>
+                        <li><b>Травы:</b> тимьян, чабрец, майоран, базилик</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>Чем заняться</h4>
+                    <ul>
+                        <li>Сделать мороженное</li>
+                        <li>Сделать лимонад</li>
+                        <li>Сходить на дегустацию вина</li>
+                        <li>Снять домик</li>
+                        <li>Сходить на рынок</li>
+                        <li>Искупаться в озере</li>
+                        <li>Прокатиться на лодке</li>
+                        <li>Съездить на пляж</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="month" id="august">
+                <h3 class="month__title"><a href="#august">Август</a></h3>
+                <div class="list">
+                    <h4>Сезонное</h4>
+                    <ul>
+                        <li>Баклажаны</li>
+                        <li>Кабачки</li>
+                        <li>Сладкий перец</li>
+                        <li>Кукуруза</li>
+                        <li>Брокколи</li>
+                        <li>Брюква</li>
+                        <li>Горох</li>
+                        <li>Дайкон</li>
+                        <li>Кольраби</li>
+                        <li>Редька</li>
+                        <li>Белокочанная, краснокочанная, китайская, савойская и цветная капуста</li>
+                        <li>Летняя тыква</li>
+                        <li>Молодая картошка</li>
+                        <li>Морковь</li>
+                        <li>Свёкла</li>
+                        <li>Репчатый лук</li>
+                        <li>Летний лук-порей</li>
+                        <li>Огурцы</li>
+                        <li>Редис</li>
+                        <li>Сельдерей</li>
+                        <li>Стручковая фасоль</li>
+                        <li>Фенхель</li>
+                        <li>Помидоры</li>
+                        <li><b>Травы:</b> базилик, водяной кресс, зеленый и шнитт-лук, салат дуболистны, кинза, мята, кресс-салат, орегано, петрушка, шпинат, розмарин, кочанный и листовой салат, тимьян, укроп, щавель</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>Чем заняться</h4>
+                    <ul>
+                        <li>Избегать жаркого центра города</li>
+                        <li>Прочитать пылящиеся дома книги, особенно пока в городе стоит дым от пожаров</li>
+                        <li>Сделать мороженное</li>
+                        <li>Сделать лимонад</li>
+                        <li>Искупаться в озере</li>
+                        <li>Прокатиться на лодке</li>
+                        <li>Съездить на пляж</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="season season--autumn">
+            <h2 class="season__title">Осень</h2>
+            <div class="month" id="september">
+                <h3 class="month__title"><a href="#september">Сентябрь</a></h3>
+                <div class="list">
+                    <h4>Сезонное</h4>
+                    <ul>
+                        <li>Кабачки</li>
+                        <li>Баклажаны</li>
+                        <li>Тыква</li>
+                        <li>Огурцы</li>
+                        <li>Помидоры</li>
+                        <li>Картофель</li>
+                        <li>Морковь</li>
+                        <li>Сладкий перец</li>
+                        <li>Репа</li>
+                        <li>Свёкла</li>
+                        <li>Кукуруза</li>
+                        <li>Пастернак</li>
+                        <li>Сельдерей</li>
+                        <li>Фенхель</li>
+                        <li>Краснокочанная, белокочанная, цветная, савойская и брюссельская капуста</li>
+                        <li>Брокколи</li>
+                        <li>Кейл</li>
+                        <li>Репчатый лук</li>
+                        <li>Лук-порей</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>Чем заняться</h4>
+                    <ul>
+                        <li>Сходить на рынок</li>
+                        <li>Полюбоваться закатом</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="month" id="october">
+                <h3 class="month__title"><a href="#october">Октябрь</a></h3>
+                <div class="list">
+                    <h4>Сезонное</h4>
+                    <ul>
+                        <li>Баклажаны</li>
+                        <li>Кабачки</li>
+                        <li>Патиссоны</li>
+                        <li>Тыква</li>
+                        <li>Морковь</li>
+                        <li>Огурцы</li>
+                        <li>Помидоры</li>
+                        <li>Болгарский перец</li>
+                        <li>Свёкла</li>
+                        <li>Лук</li>
+                        <li>Сельдерей</li>
+                        <li>Топинамбур</li>
+                        <li>Фасоль</li>
+                        <li>Хрен</li>
+                        <li>Чеснок</li>
+                        <li>Фенхель</li>
+                        <li>Корень петрушки</li>
+                        <li>Цикорий</li>
+                        <li>Кукуруза</li>
+                        <li>Батат</li>
+                        <li>Краснокочанная, белокочанная, савойская, брюссельская и цветная капуста</li>
+                        <li>Брокколи</li>
+                        <li>Кейл</li>
+                        <li>Редька</li>
+                        <li>Репа</li>
+                        <li>Брюква</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>Чем заняться</h4>
+                    <ul>
+                        <li>Испечь яблочный пирог</li>
+                        <li>Сварить суп</li>
+                        <li>Выпить яблочный сидр</li>
+                        <li>Собрать яблоки</li>
+                        <li>Сходить по грибы</li>
+                        <li>Устроить вечер настольных игр</li>
+                        <li>Собрать вместе пазл</li>
+                        <li>Прочитать/посмотреть ужастик</li>
+                        <li>Пожарить семечки</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="month" id="november">
+                <h3 class="month__title"><a href="#november">Ноябрь</a></h3>
+                <div class="list">
+                    <h4>Сезонное</h4>
+                    <ul>
+                        <li>Картофель</li>
+                        <li>Батат</li>
+                        <li>Топинамбур</li>
+                        <li>Тыква</li>
+                        <li>Огурцы</li>
+                        <li>Помидоры</li>
+                        <li>Сладкий перец</li>
+                        <li>Патиссоны</li>
+                        <li>Кабачки</li>
+                        <li>Репчатый лук</li>
+                        <li>Лук-порей</li>
+                        <li>Стручковая фасоль</li>
+                        <li>Морковь</li>
+                        <li>Свёкла</li>
+                        <li>Брюква</li>
+                        <li>Пастернак</li>
+                        <li>Турнепс</li>
+                        <li>Репа</li>
+                        <li>Хрен</li>
+                        <li>Корень сельдерея</li>
+                        <li>Редька</li>
+                        <li>Цикорий</li>
+                        <li>Краснокочанная, белокочанная, савойская, брюссельская и цветная капуста</li>
+                        <li>Брокколи</li>
+                        <li>Шпинат</li>
+                        <li>Петрушка</li>
+                        <li>Руккола</li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>Чем заняться</h4>
+                    <ul>
+                        <li>Испечь яблочный пирог</li>
+                        <li>Сварить суп</li>
+                        <li>Выпить яблочный сидр</li>
+                        <li>Съездить на гору</li>
+                        <li>Собрать пазл</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>Присылайте дополнения на <a href="mailto:intro@internet.ru">intro@internet.ru</a></footer>
+</body>
+
+</html>
